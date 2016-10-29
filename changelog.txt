@@ -1,0 +1,5 @@
+[B]0.5.0[/B]
+. 2016-03-07 Created
+. 2016-05-11 Modified (site changes)
+. 2016-06-27 Modified (site changes -- live link)
+. 2016-07-20 Modified (site changes)
