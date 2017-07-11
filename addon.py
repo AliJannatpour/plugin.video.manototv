@@ -160,14 +160,14 @@ def getVideoLinks(container_url):
 	return result
 
 def resolveVideo(page_url):
-	#node = getDOM(urljoin(__site_baseurl, page_url))
+	node = getDOM(urljoin(__site_baseurl, page_url))
 	#node = node.find("video", {"id" : "HTML5player"})
-	#node = node.find("source")
-	#link = node['src']
-	doc = getDoc(urljoin(__site_baseurl, page_url))
+	node = node.find("source")
+	link = node['src']
+	#doc = getDoc(urljoin(__site_baseurl, page_url))
 	#link = re.search('(?<=<source\ssrc=\")[^\"]*', doc).group(0)
-	link = re.search('file\s*\:\s*\"https\:[^\"]*', doc).group(0)
-	link = link[link.find('https'):]
+	#link = re.search('file\s*\:\s*\"https\:[^\"]*', doc).group(0)
+	#link = link[link.find('https'):]
 	return link
 
 def getLiveLink():
@@ -186,12 +186,19 @@ def getLiveLink():
    	for k in streams.keys():
        		bitrates.append(int(k))
 	bitrates.sort()
-   	bitrates.reverse()		
+   	bitrates.reverse()
 	url = streams[str(bitrates[0])]
+	'''
 	'''
 	doc = getDoc(urljoin(__site_baseurl, page_url))
 	link = re.search('file\s*\:\s*\"https\:[^\"]*', doc).group(0)
 	link = link[link.find('https'):]
+	'''
+	node = getDOM(urljoin(__site_baseurl, page_url))
+	link = node.find("video")
+	if not(link == None):
+		link = link.find('source')
+		link = link['src']
 	return link
 
 # main
@@ -202,7 +209,7 @@ def main():
 	elif not (getArg('manoto-category') is None):
 		progs = getPrograms(getArg('manoto-category'))
 		for p in progs:
-			additem(title=p['title'], 
+			additem(title=p['title'],
 				url= build_url({"manoto-folder": p['url']}),
 				icon=p['img'], isfolder=True, isplayable=False)
 		addEOI()
@@ -226,10 +233,10 @@ def main():
 	else:
 		play(resolveVideo(getArg('manoto-link')))
 	return True
-	
+
 try:
 	main()
 except Exception, e:
-	alert(str(e))
+	alert("ERR:" + str(e))
 	#alert('Error retrieving data from Manoto TV website')
 
