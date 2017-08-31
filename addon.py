@@ -10,9 +10,10 @@
 
 import xbmcplugin,xbmcgui,xbmcaddon
 import urllib,urlparse,urllib2,re,os,cookielib,string
-from BeautifulSoup import BeautifulSoup
 import json
+import requests
 from urlparse import urljoin
+from bs4 import BeautifulSoup
 
 # plugin constants
 
@@ -52,11 +53,12 @@ def alert(msg):
 	dialog.ok(addonname, msg)
 
 def getDoc(url):
-	resp = http_request.open(url)
-	return resp.read()
+	headers = {'User-Agent':'Mozilla/5.0'}
+	page = requests.get(url)
+	return page.text
 
 def getDOM(url):
-	return BeautifulSoup(getDoc(url))
+	return BeautifulSoup(getDoc(url), 'html.parser')
 
 def play(video):
 	playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
@@ -121,12 +123,13 @@ def getCategories():
 	node = node.find("div", {"class" : "ShowPanelContent"})
 	if not(node == None):
 		node = node.findAll("div", {"class" : "Header"})
-	for link in node:
-		url = None
-		title = link.text
-		entitle = link['title']
-		img = None
-		result.append({'title': title, 'entitle': entitle, 'img': img, 'url': url})
+	if not(node == None):
+		for link in node:
+			url = None
+			title = link.text
+			entitle = link['title']
+			img = None
+			result.append({'title': title, 'entitle': entitle, 'img': img, 'url': url})
 	#result.sort(key=lambda i: i['title'], reverse=False)
 	return result
 
