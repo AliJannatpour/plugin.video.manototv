@@ -43,6 +43,8 @@ __site_baseurl = "https://www.manototv.com/"
 
 #xbmcplugin.setContent(addon_handle, 'movies')
 
+requests.packages.urllib3.disable_warnings()
+
 cookies = cookielib.CookieJar()
 http_request = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookies))
 
